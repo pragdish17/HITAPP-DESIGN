@@ -5,38 +5,98 @@
 <title>Call Judging HitApp</title>
 <style>
   body { font-family: Arial; margin: 20px; }
-  .transcript { border: 1px solid #999; padding: 10px; height: 200px; overflow: scroll; }
+  .layout { display: flex; gap: 20px; align-items: flex-start; }
+  .transcript { border: 1px solid #999; padding: 10px; height: 400px; overflow: scroll; flex: 1; min-width: 0; }
+  .questions { flex: 1; min-width: 0; }
   .q { margin-top: 15px; }
+  .rubric { font-size: 13px; color: #555; margin-top: 6px; }
+  .error { color: #b00020; margin-top: 12px; display: none; }
+  button[type="submit"] {
+    background: #1a73e8;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    font-size: 15px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  button[type="submit"]:hover { background: #1558b0; }
+  @media (max-width: 800px) {
+    .layout { display: block; }
+    .transcript { height: 400px; margin-bottom: 15px; }
+  }
 </style>
 </head>
 <body>
 
 <h2>Judge the Call</h2>
 
-<p>Call ID: ${CallId}</p>
+<p>Call ID: ${CallId} &nbsp;|&nbsp; Call Type: ${CallType}</p>
 
-<div class="transcript">${Transcript}</div>
+<form id="judgeForm">
+<div class="layout">
+  <div class="transcript">${Transcript}</div>
 
-<div class="q">
-  <p>1. Did the agent complete the user's task?</p>
-  <input type="radio" name="TaskCompleted" value="Yes"> Yes
-  <input type="radio" name="TaskCompleted" value="No"> No
+  <div class="questions">
+    <div class="q">
+      <p>1. Did the agent complete the user's task?</p>
+      <input type="radio" name="TaskCompleted" value="Yes"> Yes
+      <input type="radio" name="TaskCompleted" value="No"> No
+    </div>
+
+    <div class="q">
+      <p>2. Rate the agent's tone (1-5)</p>
+      <select name="ToneRating">
+        <option value="">Select a rating</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+      <p class="rubric">1 = rude &nbsp;&nbsp; 5 = excellent</p>
+    </div>
+
+    <div class="q">
+      <p>3. Comments</p>
+      <textarea name="Comments" rows="3" cols="50"></textarea>
+    </div>
+
+    <br>
+    <button type="submit">Submit</button>
+    <p class="error" id="formError"></p>
+  </div>
 </div>
+</form>
 
-<div class="q">
-  <p>2. Rate the agent's tone (1-5)</p>
-  <select name="ToneRating">
-    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-  </select>
-</div>
+<script>
+  document.getElementById("judgeForm").addEventListener("submit", function (e) {
+    var task = document.querySelector('input[name="TaskCompleted"]:checked');
+    var tone = document.querySelector('select[name="ToneRating"]').value;
+    var comments = document.querySelector('textarea[name="Comments"]').value.trim();
+    var errorEl = document.getElementById("formError");
+    var messages = [];
 
-<div class="q">
-  <p>3. Comments</p>
-  <textarea name="Comments" rows="3" cols="50"></textarea>
-</div>
+    if (!task) {
+      messages.push("Please answer question 1 (task completed).");
+    }
+    if (!tone) {
+      messages.push("Please answer question 2 (tone rating).");
+    }
+    if (task && task.value === "No" && !comments) {
+      messages.push("Comments are required when Task Completed is No.");
+    }
 
-<br>
-<button type="submit">Submit</button>
+    if (messages.length) {
+      e.preventDefault();
+      errorEl.style.display = "block";
+      errorEl.textContent = messages.join(" ");
+    } else {
+      errorEl.style.display = "none";
+      errorEl.textContent = "";
+    }
+  });
+</script>
 
 </body>
 </html>
