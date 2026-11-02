@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Call Judging HitApp</title>
+<style>
+  body { font-family: Arial; margin: 20px; }
+  .transcript { border: 1px solid #999; padding: 10px; height: 200px; overflow: scroll; }
+  .q { margin-top: 15px; }
+</style>
+</head>
+<body>
+
+<h2>Judge the Call</h2>
+
+<p>Call ID: ${CallId}</p>
+
+<div class="transcript">${Transcript}</div>
+
+<div class="q">
+  <p>1. Did the agent complete the user's task?</p>
+  <input type="radio" name="TaskCompleted" value="Yes"> Yes
+  <input type="radio" name="TaskCompleted" value="No"> No
+</div>
+
+<div class="q">
+  <p>2. Rate the agent's tone (1-5)</p>
+  <select name="ToneRating">
+    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+  </select>
+</div>
+
+<div class="q">
+  <p>3. Comments</p>
+  <textarea name="Comments" rows="3" cols="50"></textarea>
+</div>
+
+<br>
+<button type="submit">Submit</button>
+
+</body>
+</html>
